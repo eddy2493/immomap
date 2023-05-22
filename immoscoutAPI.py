@@ -1,4 +1,7 @@
 import requests
+from datetime import date
+today = str(date.today())
+
 
 _headers = {
     'authority': 'rest-api.immoscout24.ch',

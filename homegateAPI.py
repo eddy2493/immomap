@@ -1,4 +1,6 @@
 import requests
+from datetime import date
+today = str(date.today())
 
 _headers = {
     'authority': 'api.homegate.ch',
@@ -84,4 +86,7 @@ def get_listings(zip_code = 2501, offer_type='RENT'):
         results = requests.post('https://api.homegate.ch/search/listings', headers=_headers, json=_json_data_customizer(zip_code, offer_type, 100, _from)).json()
         properties.extend(results['results'])
     return properties
+
+def dump_listings(zip_code = 2501, offer_type='RENT', path=''):
+    return 0
     
