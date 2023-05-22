@@ -14,6 +14,7 @@ _headers = {
     'sec-fetch-mode': 'cors',
     'sec-fetch-site': 'same-site',
     'sec-gpc': '1',
+    'is24-meta-pagenumber': '1',
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36',
     'x-originalclientip': '64.252.144.138',
     'x-originalurl': 'http%3A%2F%2Fwww.immoscout24.ch%2Fde',
@@ -52,4 +53,11 @@ def get_listings(zip_code = 2501, offer_type='RENT'):
         params['t']=1 if offer_type=='RENT' else 2
         params['l']=immoscout_location_id
         params['inp']=1
-        return requests.get('https://rest-api.immoscout24.ch/v4/de/properties', params=params, headers=_headers).json()
+    results = requests.get('https://rest-api.immoscout24.ch/v4/de/properties', params=params, headers=_headers).json()
+    _is24_meta_pagenumber = 1
+    while (_is24_meta_pagenumber <= results['pagingInfo']['totalPages']):
+        _is24_meta_pagenumber +=1
+        _headers['is24-meta-pagenumber'] = str(_is24_meta_pagenumber)
+        _res = requests.get('https://rest-api.immoscout24.ch/v4/de/properties', params=params, headers=_headers).json()
+        results['properties'].extend(_res['properties'])
+    return results['properties']
